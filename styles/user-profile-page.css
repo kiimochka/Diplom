@@ -1,0 +1,413 @@
+.user-profile-page {
+  max-width: 1180px;
+  margin: 32px auto;
+  padding: 0 16px;
+  display: grid;
+  gap: 20px;
+}
+
+.user-profile-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 8px 28px var(--shadow-card-cool-subtle);
+}
+
+.user-main-info {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.user-profile-avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  background: var(--color-bg-muted-strong);
+  color: var(--color-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  overflow: hidden;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.user-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-profile-avatar svg {
+  width: 38px;
+  height: 38px;
+}
+
+.user-profile-avatar--small {
+  width: 42px;
+  height: 42px;
+  font-size: 14px;
+}
+
+.user-profile-avatar--small svg {
+  width: 20px;
+  height: 20px;
+}
+
+.user-main-info-content {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.user-main-info h2,
+.user-profile-empty h2 {
+  margin: 0;
+  color: var(--color-text-black);
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.user-profile-location,
+.user-profile-badge,
+.user-profile-section-title,
+.user-profile-trip-details span,
+.user-review-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.user-profile-location {
+  margin-top: 8px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.user-profile-location svg,
+.user-profile-badge svg,
+.user-profile-section-title svg,
+.user-profile-trip-details svg,
+.user-review-rating svg {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+
+.user-profile-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.user-profile-badge {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-black);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.user-profile-content-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.4fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.user-about,
+.user-created-trips,
+.user-reviews {
+  display: grid;
+  gap: 16px;
+}
+
+.user-reviews {
+  grid-column: 1 / -1;
+}
+
+.user-profile-section-title {
+  color: var(--color-text-black);
+}
+
+.user-profile-section-title h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.user-about p,
+.user-review-item p,
+.user-profile-empty p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.user-profile-empty-state {
+  padding: 18px;
+  border: 1px dashed var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.user-profile-trips-list,
+.user-reviews-list {
+  display: grid;
+  gap: 12px;
+}
+
+.user-profile-trip-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-bg-card);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.user-profile-trip-card:hover {
+  border-color: var(--color-warning-button-soft);
+  box-shadow: 0 10px 24px var(--shadow-card-subtle);
+  transform: translateY(-1px);
+}
+
+.user-profile-trip-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-profile-trip-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.user-profile-trip-main {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.user-profile-trip-route {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--color-text-black);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.user-profile-trip-route span:not(.user-profile-route-separator) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.user-profile-route-separator {
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.user-profile-trip-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.user-review-item {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-bg-card);
+}
+
+.user-review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.user-review-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--color-text-black);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.user-review-author:hover span {
+  color: var(--color-warning-button-text);
+}
+
+.user-review-author span {
+  overflow-wrap: anywhere;
+}
+
+.user-review-rating {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--color-warning-border);
+  color: var(--color-warning-text-muted);
+  font-size: 14px;
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.user-review-item time {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.user-profile-empty {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+}
+
+.user-profile-empty-icon {
+  width: 36px;
+  height: 36px;
+  color: var(--color-text-secondary);
+}
+
+.user-profile-loading {
+  display: grid;
+  grid-template-columns: 104px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.user-profile-loading-lines {
+  display: grid;
+  gap: 12px;
+}
+
+.user-profile-skeleton {
+  min-height: 22px;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    var(--color-border-default) 0%,
+    var(--color-bg-muted) 48%,
+    var(--color-border-default) 100%
+  );
+  background-size: 220% 100%;
+  animation: user-profile-loading 1.2s ease-in-out infinite;
+}
+
+.user-profile-skeleton--avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+}
+
+.user-profile-skeleton--short {
+  width: min(260px, 70%);
+}
+
+@keyframes user-profile-loading {
+  0% {
+    background-position: 100% 0;
+  }
+
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-profile-page {
+    margin: 20px auto;
+    gap: 16px;
+  }
+
+  .user-profile-card {
+    padding: 18px;
+  }
+
+  .user-main-info,
+  .user-profile-loading {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .user-main-info-content {
+    justify-items: center;
+  }
+
+  .user-profile-meta {
+    justify-content: center;
+  }
+
+  .user-profile-content-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .user-review-header {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 520px) {
+  .user-main-info h2,
+  .user-profile-empty h2 {
+    font-size: 22px;
+  }
+
+  .user-profile-avatar {
+    width: 88px;
+    height: 88px;
+    font-size: 28px;
+  }
+
+  .user-profile-avatar--small {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+
+  .user-profile-trip-card {
+    grid-template-columns: 1fr;
+  }
+
+  .user-review-header {
+    flex-direction: column;
+  }
+
+  .user-review-rating {
+    align-self: flex-start;
+  }
+}

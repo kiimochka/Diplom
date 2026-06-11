@@ -1,0 +1,5 @@
+.history-trips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* расстояние между TripCard */
+}
