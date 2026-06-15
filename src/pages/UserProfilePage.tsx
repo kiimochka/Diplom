@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { Trip, User } from "../types";
 import "../styles/user-profile-page.css";
@@ -8,6 +8,7 @@ import { getCurrentReturnPath, getSafeReturnTo } from "../utils/returnTo";
 import { readReviews } from "../utils/reviewsStorage";
 import { readUsers } from "../utils/usersStorage";
 import {
+  Arrow,
   CalendarIcon,
   MessageIcon,
   People,
@@ -24,6 +25,14 @@ type ProfileState = {
   reviews: ReturnType<typeof readReviews>;
 };
 
+type ProfileTripGroupProps = {
+  title: string;
+  count: number;
+  emptyText: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+};
+
 const formatDate = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -38,6 +47,21 @@ const formatDate = (value: string) => {
 const getTripPath = (trip: Trip) =>
   trip.type === "cargo" ? `/cargo-trip/${trip.id}` : `/trip/${trip.id}`;
 
+const isFutureTrip = (trip: Trip) => {
+  if (trip.status === "archived" || trip.status === "cancelled") {
+    return false;
+  }
+
+  const tripStartDate = new Date(
+    `${trip.date}T${trip.departureTime || "00:00"}`,
+  );
+  if (Number.isNaN(tripStartDate.getTime())) {
+    return false;
+  }
+
+  return tripStartDate >= new Date();
+};
+
 const Avatar: React.FC<{ user: User; size?: "large" | "small" }> = ({
   user,
   size = "large",
@@ -50,6 +74,55 @@ const Avatar: React.FC<{ user: User; size?: "large" | "small" }> = ({
     )}
   </div>
 );
+
+const ProfileTripGroup: React.FC<ProfileTripGroupProps> = ({
+  title,
+  count,
+  emptyText,
+  children,
+  defaultOpen = false,
+}) => {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  useEffect(() => {
+    setIsOpen(defaultOpen);
+  }, [defaultOpen]);
+
+  return (
+    <div className="user-profile-trip-group">
+      <button
+        type="button"
+        className="user-profile-trip-group-toggle"
+        onClick={() => setIsOpen((current) => !current)}
+        aria-expanded={isOpen}
+      >
+        <span>{title}</span>
+        <span className="user-profile-trip-group-meta">
+          {count}
+          <span
+            className={
+              "user-profile-trip-group-chevron" +
+              (isOpen ? " user-profile-trip-group-chevron--open" : "")
+            }
+            aria-hidden="true"
+          >
+            <Arrow />
+          </span>
+        </span>
+      </button>
+
+      {isOpen && (
+        <div className="user-profile-trip-group-content">
+          {count === 0 ? (
+            <div className="user-profile-empty-state">{emptyText}</div>
+          ) : (
+            children
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const UserProfilePage: React.FC = () => {
   const { id, userId } = useParams<{ id?: string; userId?: string }>();
@@ -86,6 +159,21 @@ const UserProfilePage: React.FC = () => {
   const profileTrips = useMemo(
     () => state.trips.filter((trip) => trip.driver.id === state.profile?.id),
     [state.profile?.id, state.trips],
+  );
+
+  const futureProfileTrips = useMemo(
+    () => profileTrips.filter(isFutureTrip),
+    [profileTrips],
+  );
+
+  const futurePassengerTrips = useMemo(
+    () => futureProfileTrips.filter((trip) => trip.type === "passenger"),
+    [futureProfileTrips],
+  );
+
+  const futureCargoTrips = useMemo(
+    () => futureProfileTrips.filter((trip) => trip.type === "cargo"),
+    [futureProfileTrips],
   );
 
   const profileReviews = useMemo(
@@ -138,6 +226,40 @@ const UserProfilePage: React.FC = () => {
   }
 
   const profile = state.profile;
+  const renderProfileTrip = (trip: Trip) => (
+    <Link
+      key={trip.id}
+      to={getTripPath(trip)}
+      state={{ from: currentReturnPath }}
+      className="user-profile-trip-card"
+    >
+      <div className="user-profile-trip-icon">
+        {trip.type === "cargo" ? (
+          <TruckIcon aria-hidden="true" />
+        ) : (
+          <TripIcon aria-hidden="true" />
+        )}
+      </div>
+      <div className="user-profile-trip-main">
+        <div className="user-profile-trip-route">
+          <span>{trip.fromCity}</span>
+          <span className="user-profile-route-separator">—</span>
+          <span>{trip.toCity}</span>
+        </div>
+        <div className="user-profile-trip-details">
+          <span>
+            <CalendarIcon aria-hidden="true" />
+            {formatDate(trip.date)}, {trip.departureTime}
+          </span>
+          <span>
+            {trip.type === "cargo"
+              ? `${trip.pricePerCar ?? trip.pricePerSeat} ₽ за машину`
+              : `${trip.pricePerSeat} ₽ за место`}
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
 
   return (
     <div className="user-profile-page">
@@ -201,46 +323,32 @@ const UserProfilePage: React.FC = () => {
             <h3>Созданные поездки</h3>
           </div>
 
-          {profileTrips.length === 0 ? (
+          {futureProfileTrips.length === 0 ? (
             <div className="user-profile-empty-state">
-              Пользователь пока не создавал поездок.
+              У пользователя пока нет будущих поездок.
             </div>
           ) : (
-            <div className="user-profile-trips-list">
-              {profileTrips.map((trip) => (
-                <Link
-                  key={trip.id}
-                  to={getTripPath(trip)}
-                  state={{ from: currentReturnPath }}
-                  className="user-profile-trip-card"
-                >
-                  <div className="user-profile-trip-icon">
-                    {trip.type === "cargo" ? (
-                      <TruckIcon aria-hidden="true" />
-                    ) : (
-                      <TripIcon aria-hidden="true" />
-                    )}
-                  </div>
-                  <div className="user-profile-trip-main">
-                    <div className="user-profile-trip-route">
-                      <span>{trip.fromCity}</span>
-                      <span className="user-profile-route-separator">—</span>
-                      <span>{trip.toCity}</span>
-                    </div>
-                    <div className="user-profile-trip-details">
-                      <span>
-                        <CalendarIcon aria-hidden="true" />
-                        {formatDate(trip.date)}, {trip.departureTime}
-                      </span>
-                      <span>
-                        {trip.type === "cargo"
-                          ? `${trip.pricePerCar ?? trip.pricePerSeat} ₽ за машину`
-                          : `${trip.pricePerSeat} ₽ за место`}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+            <div className="user-profile-trip-groups">
+              <ProfileTripGroup
+                title="Пассажирские поездки"
+                count={futurePassengerTrips.length}
+                emptyText="Будущих пассажирских поездок пока нет."
+                defaultOpen={futurePassengerTrips.length > 0}
+              >
+                <div className="user-profile-trips-list">
+                  {futurePassengerTrips.map(renderProfileTrip)}
+                </div>
+              </ProfileTripGroup>
+
+              <ProfileTripGroup
+                title="Грузовые поездки"
+                count={futureCargoTrips.length}
+                emptyText="Будущих грузовых поездок пока нет."
+              >
+                <div className="user-profile-trips-list">
+                  {futureCargoTrips.map(renderProfileTrip)}
+                </div>
+              </ProfileTripGroup>
             </div>
           )}
         </section>
