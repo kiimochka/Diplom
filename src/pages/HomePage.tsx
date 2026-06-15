@@ -374,9 +374,6 @@ const HomePage: React.FC = () => {
         <div className="home-hero__content">
           {tripType === "cargo" ? (
             <>
-              <span className="home-hero__badge">
-                Поиск попутной машины для перевозки груза
-              </span>
 
               <h1 className="home-hero__title">
                 Перевезти груз проще,
