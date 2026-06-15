@@ -8,6 +8,7 @@ import {
   User,
   USERS_STORAGE_KEY,
 } from "../types";
+import { People } from "../icons/IconsIndex";
 
 type ChatsPageProps = {
   onOpenChat: (chatId: string) => void;
@@ -88,7 +89,7 @@ const ChatsPage: React.FC<ChatsPageProps> = ({ onOpenChat }) => {
             >
               <div className="chat-avatar">
                 <div className="avatar-circle">
-                  {otherUser?.fullName?.[0]?.toUpperCase() || "?"}
+                  <People aria-hidden="true" />
                 </div>
               </div>
 
