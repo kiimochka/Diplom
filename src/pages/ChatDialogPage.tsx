@@ -1,5 +1,5 @@
 // src/pages/ChatDialogPage.tsx
-import React, { useEffect, useState, FormEvent } from "react";
+import React, { useEffect, useRef, useState, FormEvent } from "react";
 import { useAuth } from "../context/AuthContext";
 import {
   CHATS_STORAGE_KEY,
@@ -24,6 +24,7 @@ const ChatDialogPage: React.FC<ChatDialogPageProps> = ({ chatId, onBack }) => {
   const [otherUser, setOtherUser] = useState<User | null>(null);
   const [trip, setTrip] = useState<Trip | null>(null);
   const [text, setText] = useState("");
+  const messageInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (!user || !chatId) return;
@@ -77,6 +78,12 @@ const ChatDialogPage: React.FC<ChatDialogPageProps> = ({ chatId, onBack }) => {
       }
     }
   }, [chat, user]);
+
+  useEffect(() => {
+    if (chat) {
+      messageInputRef.current?.focus();
+    }
+  }, [chat]);
 
   if (!user) {
     return <p>Для доступа к чату нужно войти.</p>;
@@ -187,6 +194,7 @@ const ChatDialogPage: React.FC<ChatDialogPageProps> = ({ chatId, onBack }) => {
 
       <form className="chat-input" onSubmit={handleSend}>
         <input
+          ref={messageInputRef}
           type="text"
           placeholder="Напишите сообщение..."
           value={text}
