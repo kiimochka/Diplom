@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 type BackButtonProps = {
   fallback?: string;
+  fallbackState?: unknown;
   className?: string;
   children?: ReactNode;
   ariaLabel?: string;
@@ -19,6 +20,7 @@ const isSafeInternalPath = (path: unknown): path is string => {
 
 const BackButton: React.FC<BackButtonProps> = ({
   fallback = "/",
+  fallbackState,
   className = "back-button",
   children = "← Назад",
   ariaLabel = "Назад",
@@ -35,7 +37,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       return;
     }
 
-    navigate(fallback);
+    navigate(fallback, { state: fallbackState });
   };
 
   return (
