@@ -21,16 +21,52 @@ import "../../styles/personaldata.css";
 
 interface PersonalData {
   fullName: string;
-  passport: string;
+  phone: string;
+  email: string;
+  about: string;
+  avatarUrl?: string;
+  region?: string;
+  passport?: string;
+  passportDetails?: PassportData;
+  passportStatus?: PassportStatus;
+}
+
+interface ProfileData {
+  fullName: string;
   phone: string;
   email: string;
   about: string;
   avatarUrl?: string;
 }
 
+interface PassportData {
+  lastName: string;
+  firstName: string;
+  middleName: string;
+  birthDate: string;
+  seriesNumber: string;
+}
+
+type PassportStatus = "not_submitted" | "pending" | "confirmed" | "rejected";
+
 const STORAGE_KEY = "rideshare-personal-data";
 const ABOUT_MAX_LENGTH = 500;
 const AVATAR_MAX_SIZE = 2 * 1024 * 1024;
+
+const emptyPassportData: PassportData = {
+  lastName: "",
+  firstName: "",
+  middleName: "",
+  birthDate: "",
+  seriesNumber: "",
+};
+
+const passportStatusLabels: Record<PassportStatus, string> = {
+  not_submitted: "Не отправлен",
+  pending: "Ждет подтверждения",
+  confirmed: "Подтвержден",
+  rejected: "Нужно исправить данные",
+};
 
 const readUsers = (): User[] => {
   const usersById = new Map<string, User>();
@@ -98,23 +134,29 @@ const getPersonalDataStorageKey = (userId: string) =>
 const ProfilePersonalData: React.FC = () => {
   const { user, login } = useAuth();
 
-  const [form, setForm] = useState<PersonalData>({
+  const [profileForm, setProfileForm] = useState<ProfileData>({
     fullName: user?.fullName || "",
-    passport: "",
     phone: "",
     email: user?.email || "",
     about: user?.about || "",
     avatarUrl: user?.avatarUrl,
   });
 
+  const [region, setRegion] = useState(user?.location || "");
+  const [passportForm, setPassportForm] =
+    useState<PassportData>(emptyPassportData);
+  const [passportStatus, setPassportStatus] =
+    useState<PassportStatus>("not_submitted");
   const [cars, setCars] = useState<Car[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPassportSaving, setIsPassportSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [passportMessage, setPassportMessage] = useState("");
+  const [passportErrorMessage, setPassportErrorMessage] = useState("");
   const [carForm, setCarForm] = useState({
     brand: "",
     model: "",
@@ -146,25 +188,37 @@ const ProfilePersonalData: React.FC = () => {
     if (stored) {
       try {
         const parsed = JSON.parse(stored) as PersonalData;
-        setForm((prev) => ({
+        setProfileForm((prev) => ({
           ...prev,
-          ...parsed,
           fullName: parsed.fullName || user.fullName,
+          phone: parsed.phone || "",
           email: parsed.email || user.email,
           about: parsed.about || user.about || "",
           avatarUrl: parsed.avatarUrl || user.avatarUrl,
         }));
+        setRegion(parsed.region || user.location || "");
+        setPassportForm({
+          ...emptyPassportData,
+          ...(parsed.passportDetails || {}),
+          seriesNumber:
+            parsed.passportDetails?.seriesNumber || parsed.passport || "",
+        });
+        setPassportStatus(parsed.passportStatus || "not_submitted");
       } catch {
         localStorage.removeItem(STORAGE_KEY);
       }
     } else {
-      setForm((prev) => ({
+      setProfileForm((prev) => ({
         ...prev,
         fullName: user.fullName,
+        phone: "",
         email: user.email,
         about: user.about || "",
         avatarUrl: user.avatarUrl,
       }));
+      setRegion(user.location || "");
+      setPassportForm(emptyPassportData);
+      setPassportStatus("not_submitted");
     }
 
     setUsers(readUsers());
@@ -194,17 +248,38 @@ const ProfilePersonalData: React.FC = () => {
     return <p>Для просмотра личных данных нужно войти в аккаунт.</p>;
   }
 
-  const handleChange = (field: keyof PersonalData, value: string) => {
-    if (!isEditing) return;
+  const readStoredPersonalData = (): Partial<PersonalData> => {
+    const stored =
+      localStorage.getItem(getPersonalDataStorageKey(user.id)) ??
+      localStorage.getItem(STORAGE_KEY);
+    if (!stored) return {};
 
+    try {
+      return JSON.parse(stored) as Partial<PersonalData>;
+    } catch {
+      return {};
+    }
+  };
+
+  const savePersonalDataPatch = (patch: Partial<PersonalData>) => {
+    const updatedData = {
+      ...readStoredPersonalData(),
+      ...patch,
+    };
+
+    localStorage.setItem(
+      getPersonalDataStorageKey(user.id),
+      JSON.stringify(updatedData),
+    );
+  };
+
+  const handleProfileChange = (field: keyof ProfileData, value: string) => {
     setStatusMessage("");
     setErrorMessage("");
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setProfileForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleAvatarChange = (file: File | null) => {
-    if (!isEditing) return;
-
     setStatusMessage("");
     setErrorMessage("");
 
@@ -223,7 +298,10 @@ const ProfilePersonalData: React.FC = () => {
     const reader = new FileReader();
     reader.onload = () => {
       if (typeof reader.result === "string") {
-        setForm((prev) => ({ ...prev, avatarUrl: reader.result as string }));
+        setProfileForm((prev) => ({
+          ...prev,
+          avatarUrl: reader.result as string,
+        }));
       }
     };
     reader.onerror = () => {
@@ -232,15 +310,31 @@ const ProfilePersonalData: React.FC = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleCarChange = (field: keyof typeof carForm, value: string) => {
-    if (!isEditing) return;
+  const handleRegionChange = (value: string) => {
+    setRegion(value);
+    setStatusMessage("");
+    setErrorMessage("");
 
+    try {
+      savePersonalDataPatch({ region: value });
+    } catch {
+      setErrorMessage("Не удалось сохранить регион. Попробуйте ещё раз.");
+    }
+  };
+
+  const handlePassportChange = (field: keyof PassportData, value: string) => {
+    setPassportMessage("");
+    setPassportErrorMessage("");
+    setPassportForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleCarChange = (field: keyof typeof carForm, value: string) => {
     setCarForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleAddCar = (e: FormEvent) => {
     e.preventDefault();
-    if (!user || !isEditing) return;
+    if (!user) return;
 
     if (!carForm.brand.trim() || !carForm.model.trim()) {
       alert("Марка и модель обязательны.");
@@ -283,7 +377,7 @@ const ProfilePersonalData: React.FC = () => {
   };
 
   const handleDeleteCar = (carId: string) => {
-    if (!user || !isEditing) return;
+    if (!user) return;
 
     // удаляем из локального списка пользователя
     const updatedUserCars = cars.filter((c) => c.id !== carId);
@@ -304,39 +398,64 @@ const ProfilePersonalData: React.FC = () => {
     localStorage.setItem(CARS_STORAGE_KEY, JSON.stringify(updatedAllCars));
   };
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
+  const handleProfileSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
     setStatusMessage("");
     setErrorMessage("");
 
-    if (!isEditing) {
-      setIsEditing(true);
+    if (!profileForm.fullName.trim()) {
+      setErrorMessage("Укажите имя.");
       return;
     }
 
     setIsSaving(true);
 
     try {
-      localStorage.setItem(
-        getPersonalDataStorageKey(user.id),
-        JSON.stringify(form),
-      );
+      savePersonalDataPatch(profileForm);
 
       const updatedUser: User = {
         ...user,
-        fullName: form.fullName.trim(),
-        email: form.email.trim(),
-        about: form.about.trim() || undefined,
-        avatarUrl: form.avatarUrl,
+        fullName: profileForm.fullName.trim(),
+        email: profileForm.email.trim(),
+        about: profileForm.about.trim() || undefined,
+        avatarUrl: profileForm.avatarUrl,
       };
 
       login(updatedUser);
       setStatusMessage("Изменения сохранены.");
-      setIsEditing(false);
     } catch {
       setErrorMessage("Не удалось сохранить данные. Попробуйте ещё раз.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handlePassportSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    setPassportMessage("");
+    setPassportErrorMessage("");
+
+    if (!passportForm.seriesNumber.trim()) {
+      setPassportErrorMessage("Укажите серию и номер паспорта.");
+      return;
+    }
+
+    setIsPassportSaving(true);
+
+    try {
+      savePersonalDataPatch({
+        passport: passportForm.seriesNumber,
+        passportDetails: passportForm,
+        passportStatus: "pending",
+      });
+      setPassportStatus("pending");
+      setPassportMessage("Данные отправлены на проверку.");
+    } catch {
+      setPassportErrorMessage(
+        "Не удалось сохранить паспортные данные. Попробуйте ещё раз.",
+      );
+    } finally {
+      setIsPassportSaving(false);
     }
   };
 
@@ -355,20 +474,19 @@ const ProfilePersonalData: React.FC = () => {
   }
 
   return (
-    <main
-      className={`profile-datacontent profile-datacontent--flat${
-        isEditing ? " profile-datacontent--editing" : ""
-      }`}
-    >
+    <main className="profile-datacontent profile-datacontent--flat">
       {/* Блок личных данных */}
       <section className="profile-card">
-        <form onSubmit={handleSubmit} className="personal-data-form">
+        <form onSubmit={handleProfileSubmit} className="personal-data-form">
           <h1 className="support-title">Личные данные</h1>
 
           <div className="profile-avatar-editor">
             <div className="profile-avatar-preview">
-              {form.avatarUrl ? (
-                <img src={form.avatarUrl} alt={form.fullName || "Аватар"} />
+              {profileForm.avatarUrl ? (
+                <img
+                  src={profileForm.avatarUrl}
+                  alt={profileForm.fullName || "Аватар"}
+                />
               ) : (
                 <People aria-hidden="true" />
               )}
@@ -376,9 +494,7 @@ const ProfilePersonalData: React.FC = () => {
             <div className="profile-avatar-actions">
               <label
                 className={`avatar-upload-button${
-                  !isEditing || isSaving
-                    ? " avatar-upload-button--disabled"
-                    : ""
+                  isSaving ? " avatar-upload-button--disabled" : ""
                 }`}
               >
                 <EditIcon aria-hidden="true" />
@@ -386,16 +502,13 @@ const ProfilePersonalData: React.FC = () => {
                 <input
                   type="file"
                   accept="image/*"
-                  disabled={!isEditing || isSaving}
+                  disabled={isSaving}
                   onChange={(e) =>
                     handleAvatarChange(e.target.files?.[0] ?? null)
                   }
                 />
               </label>
-              <p className="hint-text">
-                Можно выбрать изображение до 2 МБ. Пока серверной загрузки нет,
-                аватар сохраняется локально вместе с профилем.
-              </p>
+              <p className="hint-text">Можно выбрать изображение до 2 МБ.</p>
             </div>
           </div>
 
@@ -404,9 +517,11 @@ const ProfilePersonalData: React.FC = () => {
               Имя
               <input
                 type="text"
-                value={form.fullName}
-                onChange={(e) => handleChange("fullName", e.target.value)}
-                disabled={!isEditing || isSaving}
+                value={profileForm.fullName}
+                onChange={(e) =>
+                  handleProfileChange("fullName", e.target.value)
+                }
+                disabled={isSaving}
                 required
               />
             </label>
@@ -417,10 +532,10 @@ const ProfilePersonalData: React.FC = () => {
               Номер телефона
               <input
                 type="tel"
-                value={form.phone}
-                onChange={(e) => handleChange("phone", e.target.value)}
+                value={profileForm.phone}
+                onChange={(e) => handleProfileChange("phone", e.target.value)}
                 placeholder="+7"
-                disabled={!isEditing || isSaving}
+                disabled={isSaving}
               />
             </label>
 
@@ -428,9 +543,9 @@ const ProfilePersonalData: React.FC = () => {
               Электронная почта
               <input
                 type="email"
-                value={form.email}
-                onChange={(e) => handleChange("email", e.target.value)}
-                disabled={!isEditing || isSaving}
+                value={profileForm.email}
+                onChange={(e) => handleProfileChange("email", e.target.value)}
+                disabled={isSaving}
                 required
               />
             </label>
@@ -439,17 +554,20 @@ const ProfilePersonalData: React.FC = () => {
           <label className="form-field">
             О себе
             <textarea
-              value={form.about}
+              value={profileForm.about}
               onChange={(e) =>
-                handleChange("about", e.target.value.slice(0, ABOUT_MAX_LENGTH))
+                handleProfileChange(
+                  "about",
+                  e.target.value.slice(0, ABOUT_MAX_LENGTH),
+                )
               }
               maxLength={ABOUT_MAX_LENGTH}
               rows={5}
               placeholder="Расскажите коротко о себе, стиле поездок или важных деталях для попутчиков."
-              disabled={!isEditing || isSaving}
+              disabled={isSaving}
             />
             <span className="field-counter">
-              {form.about.length}/{ABOUT_MAX_LENGTH}
+              {profileForm.about.length}/{ABOUT_MAX_LENGTH}
             </span>
           </label>
 
@@ -457,12 +575,27 @@ const ProfilePersonalData: React.FC = () => {
             Контактные данные используются для связи между водителем
             и пассажиром, а также для уведомлений сервиса.
           </p>
+
+          {statusMessage && (
+            <div className="profile-save-message profile-save-message--success">
+              {statusMessage}
+            </div>
+          )}
+          {errorMessage && (
+            <div className="profile-save-message profile-save-message--error">
+              {errorMessage}
+            </div>
+          )}
+
+          <button type="submit" className="primary-button" disabled={isSaving}>
+            {isSaving ? "Сохраняем..." : "Сохранить изменения"}
+          </button>
         </form>
       </section>
 
       {/* Регион для поиска */}
       <section className="profile-card">
-        <form onSubmit={handleSubmit} className="personal-data-form">
+        <div className="personal-data-form">
           <h2 className="profile-card__title">Регион для поиска</h2>
 
           <div className="form-row">
@@ -470,51 +603,91 @@ const ProfilePersonalData: React.FC = () => {
               Город/населённый пункт
               <input
                 type="text"
+                value={region}
                 placeholder="Город/населённый пункт"
-                disabled={!isEditing || isSaving}
+                onChange={(e) => handleRegionChange(e.target.value)}
               />
             </label>
           </div>
-        </form>
+        </div>
       </section>
 
       {/* Документы (паспорт) */}
       <section className="profile-card">
-        <form onSubmit={handleSubmit} className="personal-data-form">
-          <h2 className="profile-card__title">Документы</h2>
-          <p className="profile-card__subtitle">Данные паспорта РФ</p>
+        <form onSubmit={handlePassportSubmit} className="personal-data-form">
+          <div className="personal-section-heading personal-section-heading--split">
+            <div>
+              <h2 className="profile-card__title">Документы</h2>
+              <p className="profile-card__subtitle">Данные паспорта РФ</p>
+            </div>
+            <span
+              className={`passport-status passport-status--${passportStatus}`}
+            >
+              {passportStatusLabels[passportStatus]}
+            </span>
+          </div>
 
           <div className="form-row form-row_3">
             <label className="form-field">
               Фамилия
-              <input type="text" disabled={!isEditing || isSaving} />
+              <input
+                type="text"
+                value={passportForm.lastName}
+                onChange={(e) =>
+                  handlePassportChange("lastName", e.target.value)
+                }
+                disabled={isPassportSaving}
+              />
             </label>
 
             <label className="form-field">
               Имя
-              <input type="text" disabled={!isEditing || isSaving} />
+              <input
+                type="text"
+                value={passportForm.firstName}
+                onChange={(e) =>
+                  handlePassportChange("firstName", e.target.value)
+                }
+                disabled={isPassportSaving}
+              />
             </label>
 
             <label className="form-field">
               Отчество
-              <input type="text" disabled={!isEditing || isSaving} />
+              <input
+                type="text"
+                value={passportForm.middleName}
+                onChange={(e) =>
+                  handlePassportChange("middleName", e.target.value)
+                }
+                disabled={isPassportSaving}
+              />
             </label>
           </div>
 
           <div className="form-row form-row_2">
             <label className="form-field">
               Дата рождения
-              <input type="date" disabled={!isEditing || isSaving} />
+              <input
+                type="date"
+                value={passportForm.birthDate}
+                onChange={(e) =>
+                  handlePassportChange("birthDate", e.target.value)
+                }
+                disabled={isPassportSaving}
+              />
             </label>
 
             <label className="form-field">
               Серия и номер
               <input
                 type="text"
-                value={form.passport}
-                onChange={(e) => handleChange("passport", e.target.value)}
+                value={passportForm.seriesNumber}
+                onChange={(e) =>
+                  handlePassportChange("seriesNumber", e.target.value)
+                }
                 placeholder="0000 000000"
-                disabled={!isEditing || isSaving}
+                disabled={isPassportSaving}
               />
             </label>
           </div>
@@ -523,6 +696,30 @@ const ProfilePersonalData: React.FC = () => {
             Паспортные данные используются только для проверки личности
             и не отображаются другим пользователям сервиса.
           </p>
+
+          {passportStatus !== "not_submitted" && (
+            <p className="passport-state-line">
+              Статус проверки: {passportStatusLabels[passportStatus]}
+            </p>
+          )}
+          {passportMessage && (
+            <div className="profile-save-message profile-save-message--success">
+              {passportMessage}
+            </div>
+          )}
+          {passportErrorMessage && (
+            <div className="profile-save-message profile-save-message--error">
+              {passportErrorMessage}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="primary-button"
+            disabled={isPassportSaving}
+          >
+            {isPassportSaving ? "Сохраняем..." : "Сохранить документы"}
+          </button>
         </form>
       </section>
 
@@ -543,7 +740,6 @@ const ProfilePersonalData: React.FC = () => {
                   type="button"
                   className="car-delete-button"
                   onClick={() => handleDeleteCar(car.id)}
-                  disabled={!isEditing || isSaving}
                 >
                   Удалить
                 </button>
@@ -562,7 +758,6 @@ const ProfilePersonalData: React.FC = () => {
             type="button"
             className="primary-outline-button"
             onClick={() => setIsCarFormOpen(true)}
-            disabled={!isEditing || isSaving}
           >
             Добавить машину
           </button>
@@ -576,7 +771,6 @@ const ProfilePersonalData: React.FC = () => {
                   placeholder="Lada"
                   value={carForm.brand}
                   onChange={(e) => handleCarChange("brand", e.target.value)}
-                  disabled={!isEditing || isSaving}
                   required
                 />
               </label>
@@ -588,7 +782,6 @@ const ProfilePersonalData: React.FC = () => {
                   placeholder="Kalina"
                   value={carForm.model}
                   onChange={(e) => handleCarChange("model", e.target.value)}
-                  disabled={!isEditing || isSaving}
                   required
                 />
               </label>
@@ -601,7 +794,6 @@ const ProfilePersonalData: React.FC = () => {
                   placeholder="Серый"
                   value={carForm.color}
                   onChange={(e) => handleCarChange("color", e.target.value)}
-                  disabled={!isEditing || isSaving}
                 />
               </label>
               <label className="form-field">
@@ -611,7 +803,6 @@ const ProfilePersonalData: React.FC = () => {
                   placeholder="2ОРУ67"
                   value={carForm.plate}
                   onChange={(e) => handleCarChange("plate", e.target.value)}
-                  disabled={!isEditing || isSaving}
                 />
               </label>
             </div>
@@ -623,18 +814,13 @@ const ProfilePersonalData: React.FC = () => {
             </p>
 
             <div className="car-form-actions">
-              <button
-                type="submit"
-                className="primary-button"
-                disabled={!isEditing || isSaving}
-              >
+              <button type="submit" className="primary-button">
                 Сохранить машину
               </button>
               <button
                 type="button"
                 className="secondary-button"
                 onClick={() => setIsCarFormOpen(false)}
-                disabled={!isEditing || isSaving}
               >
                 Отмена
               </button>
@@ -698,30 +884,6 @@ const ProfilePersonalData: React.FC = () => {
           </div>
         )}
       </section>
-
-      {/* Общая кнопка сохранить всё */}
-      <div className="profile-footer">
-        {statusMessage && (
-          <div className="profile-save-message profile-save-message--success">
-            {statusMessage}
-          </div>
-        )}
-        {errorMessage && (
-          <div className="profile-save-message profile-save-message--error">
-            {errorMessage}
-          </div>
-        )}
-
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="primary-button"
-          disabled={isSaving}
-        >
-          {!isEditing && <EditIcon aria-hidden="true" />}
-          {!isEditing ? "Изменить" : isSaving ? "Сохраняем..." : "Сохранить"}
-        </button>
-      </div>
     </main>
   );
 };
