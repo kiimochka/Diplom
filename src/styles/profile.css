@@ -133,6 +133,7 @@
 
 .profile-settings .settings-link {
   color: var(--color-warning-button);
+  text-decoration: underline;
 }
 
 .profile-settings .settings-link:hover,
