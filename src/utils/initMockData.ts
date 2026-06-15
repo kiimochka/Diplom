@@ -19,7 +19,7 @@ import {
 
 const AUTH_STORAGE_KEY = "rideshare-user";
 const MOCK_DATA_VERSION_KEY = "rideshare-mock-data-version";
-const MOCK_DATA_VERSION = "2026-05-31-cargo-params";
+const MOCK_DATA_VERSION = "2026-06-15-altai-routes";
 
 export const initMockData = () => {
   if (typeof window === "undefined") return;
