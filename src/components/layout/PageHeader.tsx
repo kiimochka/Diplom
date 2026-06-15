@@ -8,6 +8,7 @@ type PageHeaderProps = {
   subtitle?: string;
   showBack?: boolean;
   backTo?: string;
+  backState?: unknown;
   fallback?: string;
 };
 
@@ -16,6 +17,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   subtitle,
   showBack = true,
   backTo,
+  backState,
   fallback,
 }) => {
   return (
@@ -24,6 +26,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         <BackButton
           className="page-header-back"
           fallback={backTo ?? fallback ?? "/"}
+          fallbackState={backState}
           ariaLabel="Назад"
         >
           <Arrow />
