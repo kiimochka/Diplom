@@ -235,7 +235,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
               <button
                 type="button"
                 className="home-passengers-btn home-passengers-btn--plus"
-                onClick={() => setPassengers((p) => (p < 4 ? p + 1 : 4))}
+                onClick={() => setPassengers((p) => (p < 8 ? p + 1 : 8))}
               >
                 +
               </button>
