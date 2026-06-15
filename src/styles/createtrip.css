@@ -75,11 +75,8 @@
   --accent-border-soft: var(--color-accent-passenger-border-soft-alpha);
   --accent-border-button: var(--color-accent-passenger-border-button);
   --accent-text: var(--color-accent-passenger-text);
-  --submit-bg: linear-gradient(
-    135deg,
-    var(--color-accent-passenger),
-    var(--color-accent-passenger)
-  );
+  --submit-bg: var(--color-accent-passenger);
+  --submit-text: var(--color-text-black);
   --submit-shadow: var(--shadow-orange-submit);
   --placeholder-active-color: var(--accent-color);
 }
@@ -95,11 +92,8 @@
   --accent-border-soft: var(--shadow-cargo-border-soft);
   --accent-border-button: var(--shadow-cargo-border-button);
   --accent-text: var(--color-accent-cargo-text);
-  --submit-bg: linear-gradient(
-    135deg,
-    var(--color-accent-cargo),
-    var(--color-accent-cargo-light)
-  );
+  --submit-bg: var(--color-accent-cargo);
+  --submit-text: var(--color-text-inverse);
   --submit-shadow: var(--shadow-cargo-submit);
   --placeholder-active-color: var(--color-accent-cargo-light);
 }
@@ -330,25 +324,10 @@
   border: none;
   border-radius: 999px;
   background: var(--submit-bg);
-  color: var(--color-bg-card);
+  color: var(--submit-text, var(--color-text-black));
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 8px 20px var(--submit-shadow);
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    background 0.15s ease;
-}
-
-.create-trip-form button[type="submit"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 26px var(--accent-shadow-hover);
-}
-
-.create-trip-form button[type="submit"]:active {
-  transform: translateY(0);
-  box-shadow: 0 6px 14px var(--accent-shadow-active);
 }
 
 .create-trip-form button[type="button"] {
