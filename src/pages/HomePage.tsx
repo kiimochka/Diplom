@@ -26,7 +26,7 @@ import {
   EventCategory,
   UpcomingEvent,
 } from "../data/upcomingEvents";
-import altaiHeroImage from "../img/altai.jpg";
+import altaiHeroImage from "../img/altai-2.jpg";
 import cargoHeroImage from "../img/груз.jpg";
 import { useTripMode } from "../context/TripModeContext";
 import { useToast } from "../context/ToastContext";
