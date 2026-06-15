@@ -10,6 +10,7 @@ import {
   USERS_STORAGE_KEY,
   User,
 } from "../types";
+import { Arrow, People } from "../icons/IconsIndex";
 
 type ChatDialogPageProps = {
   chatId: string;
@@ -158,12 +159,12 @@ const ChatDialogPage: React.FC<ChatDialogPageProps> = ({ chatId, onBack }) => {
     <div className="chat-dialog-page">
       <div className="chat-header">
         <button type="button" className="chat-header-back" onClick={onBack}>
-          ←
+          <Arrow aria-hidden="true" />
         </button>
 
         <div className="chat-header-avatar">
           <div className="avatar-circle">
-            {otherUser?.fullName?.[0]?.toUpperCase() || "?"}
+            <People aria-hidden="true" />
           </div>
         </div>
         <div className="chat-header-info">
