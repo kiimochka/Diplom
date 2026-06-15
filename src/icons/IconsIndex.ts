@@ -11,7 +11,7 @@ export { ReactComponent as People } from "./icon-park-solid--people.svg";
 export { ReactComponent as Arrow } from "./ep_arrow-up-bold.svg";
 export { ReactComponent as Arrowdown } from "./simple-line-icons--arrow-down.svg";
 export { ReactComponent as BlcPlus } from "./simple-icons_plus.svg";
-export { ReactComponent as CardIcon } from "./card.svg";
+export { ReactComponent as CardIcon } from "./fluent--box-32-regular.svg";
 export { ReactComponent as SpeedIcon } from "./speed.svg";
 export { ReactComponent as TruckIcon } from "./truck.svg";
 export { ReactComponent as PinIcon } from "./pin.svg";
