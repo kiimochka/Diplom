@@ -17,7 +17,7 @@ import {
   People,
   StarFilledIcon,
 } from "../../icons/IconsIndex";
-import "./styles/personaldata.css";
+import "../../styles/personaldata.css";
 
 interface PersonalData {
   fullName: string;
