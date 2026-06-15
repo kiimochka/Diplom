@@ -179,8 +179,12 @@ const CargoTripDetailsPage: React.FC = () => {
       localStorage.setItem(CHATS_STORAGE_KEY, JSON.stringify(updated));
     }
 
-    navigate(`/chats/${chat.id}`, {
-      state: { from: currentReturnPath },
+    navigate("/profile", {
+      state: {
+        section: "messenger",
+        chatId: chat.id,
+        from: currentReturnPath,
+      },
     });
   };
 
