@@ -131,6 +131,15 @@
   box-shadow: none;
 }
 
+.profile-settings .settings-link {
+  color: var(--color-warning-button);
+}
+
+.profile-settings .settings-link:hover,
+.profile-settings .settings-link:focus-visible {
+  color: var(--color-warning-button);
+}
+
 .profile-notifications {
   display: flex;
   flex-direction: column;
