@@ -18,6 +18,15 @@
   font-weight: 700;
 }
 
+.settings-section h3 {
+  margin-top: 24px;
+  margin-bottom: 0;
+}
+
+.settings-section p {
+  margin: 10px 0;
+}
+
 .profile-content .support-page {
   margin: 0;
   padding: 0;
