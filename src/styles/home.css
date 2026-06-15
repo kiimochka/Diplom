@@ -411,7 +411,7 @@
   appearance: none;
 
   /* стрелочка, как у нижних фильтров, но чуть крупнее */
-  background-image: url("../icons/simple-line-icons--arrow-down.svg");
+  background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='rotate(270 8 8)'%3E%3Cpath d='M10.707 14.364C10.8945 14.1764 10.9998 13.9221 10.9998 13.657C10.9998 13.3918 10.8945 13.1375 10.707 12.95L5.75705 7.99995L10.707 3.04995C10.8892 2.86135 10.99 2.60875 10.9877 2.34655C10.9854 2.08435 10.8803 1.83354 10.6949 1.64813C10.5095 1.46272 10.2586 1.35756 9.99645 1.35528C9.73425 1.353 9.48165 1.45379 9.29305 1.63595L3.63605 7.29295C3.44858 7.48048 3.34326 7.73479 3.34326 7.99995C3.34326 8.26512 3.44858 8.51942 3.63605 8.70695L9.29305 14.364C9.48058 14.5514 9.73488 14.6567 10 14.6567C10.2652 14.6567 10.5195 14.5514 10.707 14.364Z' fill='%23000000'/%3E%3C/g%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 14px 14px;
@@ -460,20 +460,40 @@
 
 .cargo-filter-select__button {
   width: 100%;
-  padding: 8px 32px 8px 12px;
+  padding: 8px 12px;
   box-sizing: border-box;
   border-radius: 10px;
   border: none;
   background-color: var(--color-bg-card);
-  background-image: url("../icons/simple-line-icons--arrow-down.svg");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 12px 12px;
   color: var(--color-text-black);
   font-size: 14px;
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cargo-filter-select__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  transform: rotate(270deg);
+  transition: transform 0.2s ease;
+}
+
+.cargo-filter-select__arrow svg {
+  width: 12px;
+  height: 12px;
+}
+
+.cargo-filter-select__arrow--open {
+  transform: rotate(90deg);
 }
 
 .cargo-filter-select__button:focus,
@@ -640,30 +660,6 @@
   object-fit: cover;
 }
 
-.popular-event-card__badge {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 30px;
-  padding: 0 16px;
-  border-radius: 999px;
-  color: var(--color-bg-card);
-  font-size: 14px;
-  font-weight: 600;
-  box-shadow: 0 4px 10px var(--shadow-page-soft-hover);
-}
-
-.popular-event-card__badge--green {
-  background: var(--color-success);
-}
-
-.popular-event-card__badge--red {
-  background: var(--color-danger-soft);
-}
-
 .popular-event-card__content {
   display: flex;
   flex: 1;
@@ -672,7 +668,7 @@
 }
 
 .popular-event-card__title {
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   font-size: 18px;
   line-height: 1.3;
   font-weight: 700;
@@ -680,7 +676,7 @@
 }
 
 .popular-event-card__description {
-  margin: 0 0 8px;
+  margin: 0 0 14px;
   font-size: 14px;
   line-height: 1.55;
   color: var(--color-text-secondary);
@@ -690,7 +686,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 14px;
+  margin-top: auto;
+  margin-bottom: 12px;
   font-size: 13px;
   color: var(--color-text-secondary);
 }
@@ -700,7 +697,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  margin-top: auto;
+  margin-top: 0;
   margin-bottom: 12px;
   padding: 10px 12px;
   border-radius: 12px;
@@ -1217,7 +1214,7 @@
     -moz-appearance: none;
     appearance: none;
 
-    background-image: url("../icons/simple-line-icons--arrow-down.svg");
+    background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='rotate(270 8 8)'%3E%3Cpath d='M10.707 14.364C10.8945 14.1764 10.9998 13.9221 10.9998 13.657C10.9998 13.3918 10.8945 13.1375 10.707 12.95L5.75705 7.99995L10.707 3.04995C10.8892 2.86135 10.99 2.60875 10.9877 2.34655C10.9854 2.08435 10.8803 1.83354 10.6949 1.64813C10.5095 1.46272 10.2586 1.35756 9.99645 1.35528C9.73425 1.353 9.48165 1.45379 9.29305 1.63595L3.63605 7.29295C3.44858 7.48048 3.34326 7.73479 3.34326 7.99995C3.34326 8.26512 3.44858 8.51942 3.63605 8.70695L9.29305 14.364C9.48058 14.5514 9.73488 14.6567 10 14.6567C10.2652 14.6567 10.5195 14.5514 10.707 14.364Z' fill='%23000000'/%3E%3C/g%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 14px 14px;
