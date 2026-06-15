@@ -5,7 +5,11 @@ const PrivacyPolicyPage: React.FC = () => {
   return (
     <div className="privacy-policy-page">
       <div className="privacy-policy-inner">
-        <PageHeader title="Политика конфиденциальности" />
+        <PageHeader
+          title="Политика конфиденциальности"
+          backTo="/profile"
+          backState={{ section: "settings" }}
+        />
         <main className="privacy-policy-content">
           <p>
             <p>
