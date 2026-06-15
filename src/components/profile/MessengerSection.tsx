@@ -1,10 +1,24 @@
 // src/components/profile/MessengerSection.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatsPage from "../../pages/ChatsPage";
 import ChatDialogPage from "../../pages/ChatDialogPage";
 
-const MessengerSection: React.FC = () => {
-  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
+type MessengerSectionProps = {
+  initialChatId?: string | null;
+};
+
+const MessengerSection: React.FC<MessengerSectionProps> = ({
+  initialChatId = null,
+}) => {
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(
+    initialChatId,
+  );
+
+  useEffect(() => {
+    if (initialChatId) {
+      setSelectedChatId(initialChatId);
+    }
+  }, [initialChatId]);
 
   const handleOpenChat = (chatId: string) => {
     setSelectedChatId(chatId);
