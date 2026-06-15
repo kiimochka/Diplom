@@ -1036,9 +1036,18 @@
   }
 
   .home-events-carousel {
-    display: flex;
-    grid-template-columns: none;
-    gap: var(--home-carousel-gap);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: none;
+    overflow: visible;
+    scroll-snap-type: none;
+    scrollbar-width: auto;
+    padding-bottom: 0;
+  }
+
+  .home-events-carousel > * {
+    flex: initial;
+    scroll-snap-align: none;
   }
 
   /* базовый вид вкладок — уже описан выше */
