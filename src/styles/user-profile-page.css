@@ -10,7 +10,7 @@
   background: var(--color-bg-card);
   border: 1px solid var(--color-border-default);
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 8px 28px var(--shadow-card-cool-subtle);
 }
 
@@ -166,6 +166,74 @@
 .user-reviews-list {
   display: grid;
   gap: 12px;
+}
+
+.user-profile-trip-groups {
+  display: grid;
+  gap: 20px;
+}
+
+.user-profile-trip-group {
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-bg-card);
+  overflow: hidden;
+}
+
+.user-profile-trip-group-toggle {
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  background: transparent;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--color-text-black);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.user-profile-trip-group-toggle:hover {
+  background: var(--color-accent-passenger-bg-pale);
+}
+
+.user-profile-trip-group-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-black);
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.user-profile-trip-group-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transform: rotate(270deg);
+  transition: transform 0.2s ease;
+}
+
+.user-profile-trip-group-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+.user-profile-trip-group-chevron--open {
+  transform: rotate(90deg);
+}
+
+.user-profile-trip-group-content {
+  border-top: 1px solid var(--color-border-default);
+  padding: 14px;
 }
 
 .user-profile-trip-card {
