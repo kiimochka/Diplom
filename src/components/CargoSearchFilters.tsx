@@ -4,6 +4,7 @@ import {
   cargoTypeOptions,
   cargoVehicleTypeOptions,
 } from "../data/cargoOptions";
+import { Arrow } from "../icons/IconsIndex";
 
 const cargoFilterGroups = [
   {
@@ -81,6 +82,15 @@ const CargoFilterDropdown: React.FC<CargoFilterDropdownProps> = ({
         onClick={() => setIsOpen((current) => !current)}
       >
         <span>{buttonLabel}</span>
+        <span
+          className={
+            "cargo-filter-select__arrow" +
+            (isOpen ? " cargo-filter-select__arrow--open" : "")
+          }
+          aria-hidden="true"
+        >
+          <Arrow />
+        </span>
       </button>
 
       {isOpen && (
