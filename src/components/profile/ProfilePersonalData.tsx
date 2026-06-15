@@ -17,7 +17,7 @@ import {
   People,
   StarFilledIcon,
 } from "../../icons/IconsIndex";
-import "/Users/kamillafedyackina/rideshare-mvp/src/styles/personaldata.css";
+import "./styles/personaldata.css";
 
 interface PersonalData {
   fullName: string;
