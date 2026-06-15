@@ -1,5 +1,86 @@
+.history-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.history-section h3 {
+  margin: 0;
+}
+
+.history-section + .history-section {
+  margin-top: 32px;
+}
+
+.history-group {
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  background: var(--color-bg-card);
+  overflow: hidden;
+}
+
+.history-group-toggle {
+  width: 100%;
+  min-height: 52px;
+  border: 0;
+  background: transparent;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--color-text-black);
+  font: inherit;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.history-group-toggle:hover {
+  background: var(--color-accent-passenger-bg-pale);
+}
+
+.history-group-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-black);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.history-group-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transform: rotate(270deg);
+  transition: transform 0.2s ease;
+}
+
+.history-group-chevron svg {
+  width: 14px;
+  height: 14px;
+}
+
+.history-group-chevron--open {
+  transform: rotate(90deg);
+}
+
+.history-group-content {
+  border-top: 1px solid var(--color-border-default);
+  padding: 16px;
+}
+
 .history-trips-list {
   display: flex;
   flex-direction: column;
   gap: 20px; /* расстояние между TripCard */
+}
+
+.history-empty {
+  margin: 0;
+  color: var(--color-text-secondary);
 }
