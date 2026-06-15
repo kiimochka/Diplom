@@ -1,3 +1,7 @@
+import concertImage from "../img/concert.jpg";
+import liveImage from "../img/live.jpg";
+import theatreImage from "../img/theatre.jpg";
+import hockeyImage from "../img/hockey.jpg";
 export type EventCategory = "all" | "concert" | "theater" | "sport";
 
 export type UpcomingEvent = {
@@ -22,7 +26,7 @@ export const upcomingEvents: UpcomingEvent[] = [
     venue: "Дворец культуры",
     date: "2026-05-12 20:00",
     image:
-      "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1200&q=80",
+      concertImage,
     category: "concert",
     badge: "Популярно",
     badgeColor: "green",
@@ -36,7 +40,7 @@ export const upcomingEvents: UpcomingEvent[] = [
     venue: "Концертный зал Сибирь",
     date: "2026-05-15 19:30",
     image:
-      "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&q=80",
+      liveImage,
     category: "concert",
     badge: "Горячее!",
     badgeColor: "red",
@@ -50,7 +54,7 @@ export const upcomingEvents: UpcomingEvent[] = [
     venue: "Концертный зал Сибирь",
     date: "2026-05-08 19:00",
     image:
-      "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=1200&q=80",
+   theatreImage,
     category: "theater",
     buttonText: "Забронировать поездку",
     fromCity: "Барнаул",
@@ -62,7 +66,7 @@ export const upcomingEvents: UpcomingEvent[] = [
     venue: "Дворец спорта",
     date: "2026-05-20 19:30",
     image:
-      "https://images.unsplash.com/photo-1515703407324-5f753afd8be8?auto=format&fit=crop&w=1200&q=80",
+      hockeyImage,
     category: "sport",
     buttonText: "Забронировать поездку",
     fromCity: "Барнаул",
