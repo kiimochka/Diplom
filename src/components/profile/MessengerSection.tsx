@@ -30,11 +30,19 @@ const MessengerSection: React.FC<MessengerSectionProps> = ({
 
   if (!selectedChatId) {
     // показываем список чатов
-    return <ChatsPage onOpenChat={handleOpenChat} />;
+    return (
+      <div className="messenger-section">
+        <ChatsPage onOpenChat={handleOpenChat} />
+      </div>
+    );
   }
 
   // показываем сам диалог
-  return <ChatDialogPage chatId={selectedChatId} onBack={handleBackToList} />;
+  return (
+    <div className="messenger-section">
+      <ChatDialogPage chatId={selectedChatId} onBack={handleBackToList} />
+    </div>
+  );
 };
 
 export default MessengerSection;
