@@ -3,8 +3,7 @@
 .personal-data-form,
 .car-form,
 .profile-avatar-actions,
-.personal-reviews-card,
-.profile-footer {
+.personal-reviews-card {
   display: flex;
   flex-direction: column;
 }
@@ -279,13 +278,6 @@
   color: var(--color-text-black);
 }
 
-/* Consents and save state */
-.profile-footer {
-  align-items: flex-start;
-  gap: 12px;
-  margin-top: 8px;
-}
-
 .personal-reviews-list,
 .personal-review-card,
 .personal-data-loading-lines {
@@ -322,6 +314,47 @@
 
 .personal-section-heading {
   gap: 8px;
+}
+
+.personal-section-heading--split {
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.passport-status {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.passport-status--not_submitted {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+.passport-status--pending {
+  background: var(--color-warning-border);
+  color: var(--color-warning-text-muted);
+}
+
+.passport-status--confirmed {
+  background: var(--color-success-bg-soft);
+  color: var(--color-success-text-strong);
+}
+
+.passport-status--rejected {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.passport-state-line {
+  margin: 0;
+  color: var(--color-text-black);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .personal-empty-state {
