@@ -33,6 +33,9 @@ const ProfilePage: React.FC = () => {
   const { user } = useAuth(); // [file:3]
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<Section>("history");
+  const [initialMessengerChatId, setInitialMessengerChatId] = useState<
+    string | null
+  >(null);
   const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   const refreshPendingRequestsCount = useCallback(() => {
@@ -41,10 +44,13 @@ const ProfilePage: React.FC = () => {
 
   // читаем section из state, который прокидывается из Layout при клике по ЛК
   useEffect(() => {
-    const state = location.state as { section?: Section } | null;
+    const state = location.state as
+      | { section?: Section; chatId?: string }
+      | null;
     if (state?.section) {
       setActiveSection(state.section);
     }
+    setInitialMessengerChatId(state?.chatId ?? null);
   }, [location.state]);
 
   useEffect(() => {
@@ -123,7 +129,10 @@ const ProfilePage: React.FC = () => {
               ? "profile-sidebar-item profile-sidebar-item--active"
               : "profile-sidebar-item"
           }
-          onClick={() => setActiveSection("messenger")}
+          onClick={() => {
+            setActiveSection("messenger");
+            setInitialMessengerChatId(null);
+          }}
         >
           <span className="profile-sidebar-icon">
             <MessageIcon />
@@ -165,7 +174,9 @@ const ProfilePage: React.FC = () => {
           <ProfileNotifications onRequestsChanged={refreshPendingRequestsCount} />
         )}
         {activeSection === "personal" && <ProfilePersonalData />}
-        {activeSection === "messenger" && <MessengerSection />}
+        {activeSection === "messenger" && (
+          <MessengerSection initialChatId={initialMessengerChatId} />
+        )}
         {activeSection === "settings" && <ProfileSettings />}
         {activeSection === "support" && <SupportPage />}
       </section>
