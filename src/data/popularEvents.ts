@@ -1,7 +1,7 @@
-import pryanikImage from "../img/пряники.png";
-import saratovImage from "../img/глушь.jpg";
-import homeImage from "../img/домой2.jpg";
-import altaiRouteImage from "../img/1_2097460.jpg";
+import novosibirskImage from "../img/1_2097460.jpg";
+import biyskImage from "../img/altai-2.jpg";
+import kamenImage from "../img/домой2.jpg";
+import rubtsovskImage from "../img/live.jpg";
 
 export type PopularEvent = {
   id: string;
@@ -11,8 +11,6 @@ export type PopularEvent = {
   toCity: string;
   image: string;
   imagePosition?: string;
-  badge?: string;
-  badgeColor?: "green" | "red";
   duration?: string;
   distance?: string;
   priceFrom?: number;
@@ -20,54 +18,48 @@ export type PopularEvent = {
 
 export const popularEvents: PopularEvent[] = [
   {
-    id: "tula-pryanik",
-    title: "За тульским пряником",
-    description: "Гастротур в историческую Тулу.",
+    id: "novosibirsk",
+    title: "Новосибирск",
+    description: "Ежедневные поездки из Барнаула через Тальменку и Черепаново.",
     fromCity: "Барнаул",
-    toCity: "Тула",
-    image: pryanikImage,
-    badge: "Горячее!",
-    badgeColor: "red",
-    duration: "3-4 часа",
-    distance: "180 км",
-    priceFrom: 1800,
-  },
-  {
-    id: "saratov-aunt",
-    title: "К тетке в Саратов",
-    description: "Комфортная поездка к родным.",
-    fromCity: "Барнаул",
-    toCity: "Саратов",
-    image: saratovImage,
-    imagePosition: "center 75%",
-    badge: "Популярно",
-    badgeColor: "green",
-    duration: "8-10 часов",
-    distance: "720 км",
-    priceFrom: 1200,
-  },
-  {
-    id: "weekend-dacha",
-    title: "Выходные на даче",
-    description: "Отдых за городом на выходных.",
-    fromCity: "Барнаул",
-    toCity: "Бердск",
-    image: homeImage,
-    duration: "1-1.5 часа",
-    distance: "50 км",
-    priceFrom: 1200,
-  },
-  {
-    id: "altai-weekend",
-    title: "В горы на выходные",
-    description: "Маршрут к алтайским видам и свежему воздуху.",
-    fromCity: "Барнаул",
-    toCity: "Горно-Алтайск",
-    image: altaiRouteImage,
-    badge: "Новый маршрут",
-    badgeColor: "green",
+    toCity: "Новосибирск",
+    image: novosibirskImage,
     duration: "4-5 часов",
-    distance: "260 км",
-    priceFrom: 1600,
+    distance: "230 км",
+    priceFrom: 900,
+  },
+  {
+    id: "biysk",
+    title: "Бийск",
+    description: "Популярное направление к Сросткам, Белокурихе и Горному Алтаю.",
+    fromCity: "Барнаул",
+    toCity: "Бийск",
+    image: biyskImage,
+    duration: "2.5-3.5 часа",
+    distance: "165 км",
+    priceFrom: 650,
+  },
+  {
+    id: "kamen-na-obi",
+    title: "Камень-на-Оби",
+    description: "Маршруты из Барнаула и Новосибирска через Павловск и Крутиху.",
+    fromCity: "Барнаул",
+    toCity: "Камень-на-Оби",
+    image: kamenImage,
+    imagePosition: "center 65%",
+    duration: "3-4 часа",
+    distance: "210 км",
+    priceFrom: 850,
+  },
+  {
+    id: "rubtsovsk",
+    title: "Рубцовск",
+    description: "Поездки на юго-запад края через Алейск и Поспелиху.",
+    fromCity: "Барнаул",
+    toCity: "Рубцовск",
+    image: rubtsovskImage,
+    duration: "4-5 часов",
+    distance: "290 км",
+    priceFrom: 1100,
   },
 ];
