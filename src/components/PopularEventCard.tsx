@@ -20,18 +20,6 @@ const PopularEventCard: React.FC<Props> = ({ event, onFindTrip }) => {
               : undefined
           }
         />
-        {event.badge && (
-          <span
-            className={
-              "popular-event-card__badge " +
-              (event.badgeColor === "red"
-                ? "popular-event-card__badge--red"
-                : "popular-event-card__badge--green")
-            }
-          >
-            {event.badge}
-          </span>
-        )}
       </div>
 
       <div className="popular-event-card__content">
