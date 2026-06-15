@@ -5,6 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 const ProfileSettings: React.FC = () => {
   const { deleteProfile, logout } = useAuth();
   const navigate = useNavigate();
+  const settingsReturnState = {
+    from: "/profile",
+    fromState: { section: "settings" },
+  };
 
   const handleDeleteProfile = () => {
     const confirmDelete = window.confirm(
@@ -35,7 +39,11 @@ const ProfileSettings: React.FC = () => {
           На отдельной странице размещён полный текст политики
           конфиденциальности и условий обработки персональных данных.
         </p>
-        <Link to="/privacy-policy" className="settings-link">
+        <Link
+          to="/privacy-policy"
+          className="settings-link"
+          state={settingsReturnState}
+        >
           Открыть политику конфиденциальности
         </Link>
       </section>
@@ -47,7 +55,11 @@ const ProfileSettings: React.FC = () => {
           согласие на обработку своих персональных данных в соответствии с
           политикой конфиденциальности.
         </p>
-        <Link to="/personal-data-consent" className="settings-link">
+        <Link
+          to="/personal-data-consent"
+          className="settings-link"
+          state={settingsReturnState}
+        >
           Открыть текст согласия
         </Link>
       </section>
