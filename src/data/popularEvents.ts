@@ -1,7 +1,7 @@
-import novosibirskImage from "../img/1_2097460.jpg";
-import biyskImage from "../img/altai-2.jpg";
-import kamenImage from "../img/home2.jpg";
-import rubtsovskImage from "../img/live.jpg";
+import novosibirskImage from "../img/nsk.jpg";
+import biyskImage from "../img/biysk.jpg";
+import kamenImage from "../img/kamen.jpg";
+import rubtsovskImage from "../img/rubc.jpg";
 
 export type PopularEvent = {
   id: string;
