@@ -643,7 +643,7 @@ button.trip-details-passenger-row {
 .cargo-dimensions-column {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .cargo-multiline {
@@ -835,12 +835,6 @@ button.trip-details-passenger-row {
   .trip-details-secondary-btn {
     width: 100%;
     min-height: 42px;
-  }
-
-  .booking-card-btn {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
   }
 
   .cargo-params-grid {
