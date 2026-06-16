@@ -36,6 +36,11 @@ import {
   isPastDateInputValue,
 } from "../utils/dateValidation";
 import { getCurrentReturnPath } from "../utils/returnTo";
+import {
+  MAX_PASSENGER_SEATS,
+  MIN_PASSENGER_SEATS,
+  clampPassengerSeats,
+} from "../utils/passengerSeats";
 
 const HomePage: React.FC = () => {
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
@@ -46,7 +51,7 @@ const HomePage: React.FC = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
-  const [passengers, setPassengers] = useState(1);
+  const [passengers, setPassengers] = useState(MIN_PASSENGER_SEATS);
   const [tripType, setTripType] = useState<"passenger" | "cargo">("passenger");
   const [routeMode, setRouteMode] = useState<"intercity" | "city">("intercity");
 
@@ -295,7 +300,7 @@ const HomePage: React.FC = () => {
       setDate(urlDate);
       setTripType(urlTripType);
       setRouteMode(urlRouteMode);
-      setPassengers(Number.isNaN(urlPassengers) ? 1 : urlPassengers);
+      setPassengers(clampPassengerSeats(urlPassengers));
       setHasSearched(false);
     }
   }, [allTrips, searchParams, navigationType]);
@@ -374,7 +379,6 @@ const HomePage: React.FC = () => {
         <div className="home-hero__content">
           {tripType === "cargo" ? (
             <>
-
               <h1 className="home-hero__title">
                 Перевезти груз проще,
                 <br />
@@ -477,7 +481,11 @@ const HomePage: React.FC = () => {
                 <button
                   type="button"
                   className="home-passengers-btn home-passengers-btn--minus"
-                  onClick={() => setPassengers((p) => (p > 1 ? p - 1 : 1))}
+                  onClick={() =>
+                    setPassengers((p) =>
+                      Math.max(MIN_PASSENGER_SEATS, p - 1),
+                    )
+                  }
                 >
                   −
                 </button>
@@ -489,7 +497,11 @@ const HomePage: React.FC = () => {
                 <button
                   type="button"
                   className="home-passengers-btn home-passengers-btn--plus"
-                  onClick={() => setPassengers((p) => (p < 4 ? p + 1 : 4))}
+                  onClick={() =>
+                    setPassengers((p) =>
+                      Math.min(MAX_PASSENGER_SEATS, p + 1),
+                    )
+                  }
                 >
                   +
                 </button>
