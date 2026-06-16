@@ -1,9 +1,11 @@
 // src/pages/SupportPage.tsx
 import React, { useState, FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
 import "../styles/support.css";
 
 const SupportPage: React.FC = () => {
+  const { showToast } = useToast();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -18,6 +20,12 @@ const SupportPage: React.FC = () => {
     setName("");
     setEmail("");
     setMessage("");
+
+    showToast({
+      type: "success",
+      title: "Сообщение отправлено",
+      message: "Служба поддержки получила ваш вопрос и скоро ответит.",
+    });
   };
 
   return (
@@ -33,6 +41,7 @@ const SupportPage: React.FC = () => {
             placeholder="Ваше имя"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
           />
         </div>
 
@@ -44,6 +53,7 @@ const SupportPage: React.FC = () => {
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
 
@@ -55,6 +65,7 @@ const SupportPage: React.FC = () => {
             rows={5}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
+            required
           />
         </div>
 
