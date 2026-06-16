@@ -5,6 +5,11 @@ import {
   getTodayDateInputValue,
   isPastDateInputValue,
 } from "../utils/dateValidation";
+import {
+  MAX_PASSENGER_SEATS,
+  MIN_PASSENGER_SEATS,
+  clampPassengerSeats,
+} from "../utils/passengerSeats";
 
 interface SearchFormProps {
   initialFromCity?: string;
@@ -35,7 +40,9 @@ const SearchForm: React.FC<SearchFormProps> = ({
   const [fromCity, setFromCity] = useState(initialFromCity);
   const [toCity, setToCity] = useState(initialToCity);
   const [date, setDate] = useState(initialDate);
-  const [passengers, setPassengers] = useState(initialPassengers);
+  const [passengers, setPassengers] = useState(() =>
+    clampPassengerSeats(initialPassengers),
+  );
   const [routeMode, setRouteMode] = useState<"intercity" | "city">(
     initialRouteMode,
   );
@@ -45,7 +52,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
     setFromCity(initialFromCity);
     setToCity(initialToCity);
     setDate(initialDate);
-    setPassengers(initialPassengers);
+    setPassengers(clampPassengerSeats(initialPassengers));
     setRouteMode(initialRouteMode);
   }, [
     initialFromCity,
@@ -124,9 +131,7 @@ const SearchForm: React.FC<SearchFormProps> = ({
                 className="home-search-input cargo-route-type"
                 value={routeMode}
                 onChange={(e) =>
-                  setRouteMode(
-                    e.target.value === "city" ? "city" : "intercity",
-                  )
+                  setRouteMode(e.target.value === "city" ? "city" : "intercity")
                 }
               >
                 <option value="intercity">По межгороду</option>
@@ -223,7 +228,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               <button
                 type="button"
                 className="home-passengers-btn home-passengers-btn--minus"
-                onClick={() => setPassengers((p) => (p > 1 ? p - 1 : 1))}
+                onClick={() =>
+                  setPassengers((p) =>
+                    Math.max(MIN_PASSENGER_SEATS, p - 1),
+                  )
+                }
               >
                 −
               </button>
@@ -235,7 +244,11 @@ const SearchForm: React.FC<SearchFormProps> = ({
               <button
                 type="button"
                 className="home-passengers-btn home-passengers-btn--plus"
-                onClick={() => setPassengers((p) => (p < 8 ? p + 1 : 8))}
+                onClick={() =>
+                  setPassengers((p) =>
+                    Math.min(MAX_PASSENGER_SEATS, p + 1),
+                  )
+                }
               >
                 +
               </button>
