@@ -27,6 +27,7 @@ import { getCurrentReturnPath, getSafeReturnTo } from "../utils/returnTo";
 import { notifyBookingRequestsChanged } from "../utils/bookingNotifications";
 import { getReviewWord, getUserReviewStats } from "../utils/reviewsStorage";
 import { getUserById, readUsers } from "../utils/usersStorage";
+import { MAX_PASSENGER_SEATS } from "../utils/passengerSeats";
 
 const getPlaceWord = (n: number) => {
   const value = Math.abs(n) % 100;
@@ -485,7 +486,7 @@ const TripDetailsPage: React.FC = () => {
     });
   };
 
-  const maxSeatsUserCanBook = Math.min(trip.freeSeats, 3);
+  const maxSeatsUserCanBook = Math.min(trip.freeSeats, MAX_PASSENGER_SEATS);
   const totalPrice = trip.pricePerSeat * seatsToBook;
   const isDriver = user?.id === trip.driver.id;
   const isTripCancelled = trip.status === "cancelled";
