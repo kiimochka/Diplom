@@ -10,6 +10,7 @@ import PageHeader from "../components/layout/PageHeader";
 import { readTrips } from "../utils/tripsStorage";
 import { isPastDateInputValue } from "../utils/dateValidation";
 import { FiltersSettingsIcon } from "../icons/IconsIndex";
+import { clampPassengerSeats } from "../utils/passengerSeats";
 
 const useQuery = () => new URLSearchParams(useLocation().search);
 
@@ -31,7 +32,7 @@ const SearchResultsPage: React.FC = () => {
   const routeMode =
     query.get("routeMode") === "city" ? "city" : "intercity";
   const passengersRaw = Number(query.get("passengers") || "1");
-  const passengers = Number.isNaN(passengersRaw) ? 1 : passengersRaw;
+  const passengers = clampPassengerSeats(passengersRaw);
 
   const [allTrips, setAllTrips] = useState<Trip[]>([]);
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
