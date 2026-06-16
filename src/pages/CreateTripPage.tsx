@@ -20,6 +20,10 @@ import {
 import { calculateCargoPriceEstimate } from "../utils/cargoPricing";
 import { calculatePassengerPriceEstimate } from "../utils/passengerPricing";
 import { readTrips } from "../utils/tripsStorage";
+import {
+  MAX_PASSENGER_SEATS,
+  MIN_PASSENGER_SEATS,
+} from "../utils/passengerSeats";
 
 interface CreateTripForm {
   fromCity: string;
@@ -529,8 +533,14 @@ const CreateTripPage: React.FC = () => {
         }
       }
 
-      if (!Number.isInteger(freeSeats) || freeSeats < 1 || freeSeats > 8) {
-        alert("Количество мест должно быть от 1 до 8.");
+      if (
+        !Number.isInteger(freeSeats) ||
+        freeSeats < MIN_PASSENGER_SEATS ||
+        freeSeats > MAX_PASSENGER_SEATS
+      ) {
+        alert(
+          `Количество мест должно быть от ${MIN_PASSENGER_SEATS} до ${MAX_PASSENGER_SEATS}.`,
+        );
         return;
       }
     } else {
@@ -985,8 +995,8 @@ const CreateTripPage: React.FC = () => {
               <input
                 type="number"
                 inputMode="numeric"
-                min={1}
-                max={8}
+                min={MIN_PASSENGER_SEATS}
+                max={MAX_PASSENGER_SEATS}
                 step={1}
                 value={form.freeSeats}
                 onChange={(e) => handleChange("freeSeats", e.target.value)}
